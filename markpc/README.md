@@ -56,3 +56,13 @@ apps and `sunshine.conf`, so existing clients stay paired.
   KMS direct path (`mediaos-direct`) does HDR10.
 - **Client receive buffer:** set `net.core.rmem_max` to at least 16 MB on Linux clients, or the client
   warns that 4 MB of the 11 MB receive buffer it asked for was granted.
+- **Version string:** the version comes from the newest release tag in the local checkout. Fetch the
+  upstream tag before building (`git fetch upstream tag 2.0.1 --no-tags`), or the binary reports the
+  previous version and the web UI keeps offering an update.
+- **Stale CMake cache:** if configure fails with "CMakeCache.txt directory … is different", the cache was
+  created under the other path style (`C:/src` vs `/c/src`). Delete `build/CMakeCache.txt` and
+  `build/CMakeFiles`.
+- **Static DLL link with CRT 14:** `vibepollo_dualsense_audio` (new in 2.0.1) needed
+  `-Wl,-u,__mingw_fe_dfl_env` after the 2026-10-23 MSYS2 upgrade (fixed in `cmake/targets/windows.cmake`).
+- **Running the build over SSH:** Mark-PC's SSH shell is PowerShell. Use
+  `$env:MSYSTEM="UCRT64"; & C:\msys64\usr\bin\bash.exe -l -c "..."`. A bare `bash` resolves to WSL.
