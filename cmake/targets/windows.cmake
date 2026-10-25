@@ -10,6 +10,9 @@ endforeach()
 target_link_options(vibepollo_dualsense_haptics PRIVATE -municode)
 target_link_libraries(vibepollo_dualsense_haptics PRIVATE setupapi)
 target_link_libraries(vibepollo_dualsense_audio PRIVATE minhook::minhook ole32 propsys uuid shell32)
+# With -shared -static, newer mingw-w64 CRTs leave libmingwex's fesetenv needing a symbol from
+# libmingw32, which the driver has already scanned by then; pull it in up front.
+target_link_options(vibepollo_dualsense_audio PRIVATE "-Wl,-u,__mingw_fe_dfl_env")
 add_dependencies(sunshine vibepollo_dualsense_haptics vibepollo_dualsense_audio)
 if(DEFINED _MINHOOK_DLL)
     add_custom_command(TARGET vibepollo_dualsense_audio POST_BUILD
